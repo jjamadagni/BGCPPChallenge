@@ -40,6 +40,28 @@ using namespace std;
     };
   name a[3];
 
+  
+  class WStr
+{
+    private:
+        XMLCh*  wStr;
+ 
+    public:
+        WStr(const char* str)
+        {
+            wStr = XMLString::transcode(str);
+        }
+ 
+        ~WStr()
+        {
+            XMLString::release(&wStr);
+        }
+ 
+        operator const XMLCh*() const
+        {
+            return wStr;
+        }
+};
  
  class ParserErrorHandler : public ErrorHandler
 {
@@ -76,20 +98,21 @@ using namespace std;
  
 int main(int argc, const char *argv[]) 
 {
-	   
-	   
+	
+  
 	   
 	  char function;
 	  char i;
 	  
-
+	bool repeat(true);
+	  do{ 
+	  
 	  std::cout << "Please select the process you want the app to perform"  << std::endl;
 	  std::cout << "1. For XML Genereation" << std::endl;
 	  std::cout << "2. For JASON export" <<std::endl;
 	  std::cout << "3. To exit the program" << std::endl;
 	  
-	bool repeat(true);
-	  do{   
+  
 	        cin >> function;
 			switch (function)
 			{
@@ -161,30 +184,34 @@ int xml(string *filename,string *stringMember,string *intmember){
 void ValidateSchema(const char* schemaFilePath, const char* xmlFilePath)
 {  
    
-    XercesDOMParser domParser;
-	cout << "hello" << endl;
+   //schemaFilePath = "XSD.txt";
+   
+     XercesDOMParser domParser;
     if (domParser.loadGrammar(schemaFilePath, Grammar::SchemaGrammarType) == NULL)
     {
-        fprintf(stderr, "couldn't load schema OR XML file doesn't conform to the schema\n");
+        fprintf(stderr, "couldn't load schema\n");
         return;
     }
-   
-   cout << "hello1" << endl;
-   ParserErrorHandler parserErrorHandler;
-   
-   domParser.setErrorHandler(&parserErrorHandler);
-   domParser.setValidationScheme(XercesDOMParser::Val_Auto);
-   domParser.setDoNamespaces(true);
-   domParser.setDoSchema(true);
-   domParser.setValidationConstraintFatal(true);
-   
-   domParser.parse(xmlFilePath);
+ 
+    ParserErrorHandler parserErrorHandler;
+ 
+    domParser.setErrorHandler(&parserErrorHandler);
+    domParser.setValidationScheme(XercesDOMParser::Val_Auto);
+    domParser.setDoNamespaces(true);
+    domParser.setDoSchema(true);
+    domParser.setValidationConstraintFatal(true);
+ 
+    domParser.parse(xmlFilePath);
     if (domParser.getErrorCount() == 0)
-		printf("XML file validated against the schema successfully\n");
+        printf("XML file validated against the schema successfully\n");
     else
         printf("XML file doesn't conform to the schema\n");
-	
 }
+ 
+
+
+
+
 void json() 
 { 
     string xml_str, json_str;
@@ -194,7 +221,7 @@ void json()
     char BOM[4] = {(char)0xEF, (char)0xBB, (char)0xBF, '\0'}; /*BOM String*/
       
 
-    inf.open("data1.xml");
+    inf.open("data2.xml");
     outf.open("data2.js.txt");
     oss.str("");
     oss << inf.rdbuf();
@@ -204,5 +231,3 @@ void json()
     outf << BOM << json_str;
     outf.close();	   
 }
-
-       
