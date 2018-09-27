@@ -8,9 +8,9 @@ CPP Challenge
 
 3. Now clone the code and program to a local machine. once cloned copy all the files to the container directory by using the command,
    
-   '''
+  ```
    $ docker cp <File_name> <Container_name>: /<File_name>
-  '''
+ ```
   
 4. Once all the files are copied, make sure to install the libraries that are required for the code to function.
   a. The first one is Tinyxml. TO install this, in the command line type 
